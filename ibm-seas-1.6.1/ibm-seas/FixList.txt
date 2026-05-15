@@ -1,0 +1,115 @@
+PLEASE READ: Before starting the SEAS installation, upgrade, or rollback process, please follow the steps outlined below:
+
+================================================================================
+----- Setting Permissions on Storage -----
+Before deploying the Helm chart, review the following section in the values.yaml file:
+# rootSquashCheck: This flag indicates whether the deployment user has reviewed the rootSquash requirements.
+# Set it to true if the deployment user has reviewed the rootSquash requirements.
+# Set it to false if the deployment user has not reviewed the rootSquash requirements.
+rootSquashCheck: false
+
+# rootSquash Settings:
+rootSquash:
+    # Set the enabled flag to true if root squash is enabled on the mounted PV server.
+    # set it to false - If root squash is disabled on the mounted PV server. In this scenario, the umask should be set to 002, since the mounted directory is owned by the root user and the group needs write permissions. Additionally, the mounted PV directory should have 775 permissions  
+    enabled: false
+    # It should correspond to either the fsGroup or supplementalGroup ID 
+    runAsUser: 65534
+
+	
+----- Fresh install in OpenShift -----
+Run Post-delete scripts:::: 
+Remove the existing security context constraints if an older version of the SCC (Helm chart version < 1.5.2) is present in the cluster, run the Post-delete scripts as a cluster admin after extracting the downloaded package
+
+Post-delete script for cluster
+# ibm-seas/ibm_cloud_pak/pak_extensions/post-delete/clusterAdministration/deleteSecurityClusterPrereqs.sh
+
+Post-delete script for namespace
+# ibm-seas/ibm_cloud_pak/pak_extensions/post-delete/namespaceAdministration/deleteSecurityNamespacePrereqs.sh <Namespace/Project>
+
+Run Pre-install scripts::::
+If this is your first installation or you've removed a previous version of SCC, run the pre-installation scripts as a cluster admin after extracting the downloaded package. These scripts will configure the necessary security contexts
+
+Pre-install script for cluster
+# ibm-seas/ibm_cloud_pak/pak_extensions/pre-install/clusterAdministration/createSecurityClusterPrereqs.sh
+
+Pre-install script for namespace
+# ibm-seas/ibm_cloud_pak/pak_extensions/pre-install/namespaceAdministration/createSecurityNamespacePrereqs.sh <Namespace/Project>
+
+
+----- Upgrade in OpenShift -----
+Run Post-delete scripts:::: 
+Remove the existing security context constraints If you are upgrading from an older version (Helm chart version < 1.5.2), run the Post-delete scripts as a cluster admin after extracting the downloaded package
+
+Post-delete script for cluster
+# ibm-seas/ibm_cloud_pak/pak_extensions/post-delete/clusterAdministration/deleteSecurityClusterPrereqs.sh
+
+Post-delete script for namespace
+# ibm-seas/ibm_cloud_pak/pak_extensions/post-delete/namespaceAdministration/deleteSecurityNamespacePrereqs.sh <Namespace/Project>
+
+Run Pre-install scripts::::
+Execute the pre-install scripts to set up security contexts for the new version.
+
+Pre-install script for cluster (as a cluster admin)
+# ibm-seas/ibm_cloud_pak/pak_extensions/pre-install/clusterAdministration/createSecurityClusterPrereqs.sh
+
+Pre-install script for namespace (as a cluster admin)
+# ibm-seas/ibm_cloud_pak/pak_extensions/pre-install/namespaceAdministration/createSecurityNamespacePrereqs.sh <Namespace/Project>
+
+
+----- Rollback in OpenShift -----
+Please note that downgrading from version V1.5.2 to an earlier version is not supported because of changes to the Security Context.
+
+==============================================================================================================
+Helm Chart 1.6.1, Image seas-docker-image:6.1.1.1-iFix00-2025-10-15, SEAS 6.1.1.1 GA, Build 6 (07 Nov 2025)
+* Updated to the latest RHEL UBI image
+* MFT-17553 - ADV0216467  -  commons-lang3-3.17.0.jar (Publicly disclosed vulnerability)					
+* MFT-17643 - ADV0217994  -  IBM SDK, Java Technology Edition Quarterly CPU - Jul 2025 - Includes Oracle July 2025 CPU					
+* MFT-17704 - ADV0222198 - Upgrade bcpkix-fips-2.0.7.jar 
+* MFT-17707 - ADV0221482 PVR0664067 - SEAS Upgrade bc-fips-2.0.0.jar						
+* MFT-17839 - ADV0225887 -Upgrade axios-1.11.0.tgz to higher version. 
+* SEAS-3380 - REST API failing while fetching wrong profile  
+* SEAS-3420 - Create/Update operation should fail if invalid Authentication profile is provided to User profile
+* SEAS-3512 - Duplicate Response should be avoided on console when running CMD API
+* MFT-16487	- ADV0143431 PVR0558108 - SEAS Upgrade Jetty
+
+
+==============================================================================================================
+Helm Chart 1.6.0, Image seas-docker-image:6.1.1.0-iFix00-2025-07-04, SEAS 6.1.1.0 GA, Build 100 (04 Aug 2025)
+* Updated to the latest RHEL UBI image
+* Resolved various application issues
+* Added support for annotations on StatefulSets and Pods
+* Upgraded to Java 17
+* Fixed issue related to DisableService in containers
+* MFT-17449 - Unable to retrieve image pull secrets (ibm-entitlement-key)
+
+
+==============================================================================================================
+Helm Chart 1.5.4, Image seas-docker-image:6.1.0.2.03, SEAS 6.1.0.2 iFix03, Build 125 (26 Apr 2025)
+* Upgraded RHEL UBI image - registry.redhat.io/ubi9:9.5-1744101466
+* MFT-16485  - ADV0141948 - Upgrade commons-io Library to 2.17.0 CVE-2024-47554
+* MFT-16692  - Clarification on SEAS and SSP Security Vulnerability Points
+* SEAS-3269  - Ugraded guava jar to 33.4.0 and Removed xalan jar 
+* MFT-17121  - Limit number of automatic backup files created at container restart
+* MFT-17120  - Error in adding multiple supplementalGroups for SEAS SSP and SSPCM
+
+
+==============================================================================================================
+Helm Chart 1.5.3, Image seas-docker-image:6.1.0.2.02, SEAS 6.1.0.2 iFix02, Build 118 (20 Feb 2025)
+* Upgraded RHEL UBI image - registry.redhat.io/ubi9:9.5-1739751568
+* HIPER  - ADV0129991 - Upgraded JRE to 8.0.8.35
+* HIPER  - ADV0143431 - Upgraded Eclipse Jetty to v9.4.56
+* HIPER  - ADV0142003 - Removed XML tooling implementation
+* HIPER  - ADV0072211 - Upgraded BouncyCastle FIPS to 2.0.X  
+
+
+==============================================================================================================
+Helm Chart 1.5.2, Image seas-docker-image:6.1.0.2.01.1, SEAS 6.1.0.2 iFix01, Build 111 (07 Feb 2025)
+* RHEL UBI image update 
+* Application issues fixes
+* By default, network policy permits all egress and ingress traffic
+* MFT-16571 - SSP Init container security compliance errors
+* MFT-16667 - SSP Engine POD facing delays in coming up
+
+
+
