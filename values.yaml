@@ -138,7 +138,7 @@ serviceAccount:
   # Set this field to `true` to create service account or `false` to use existing service account 
   create: true
   # Specify the name of service account to be used
-  name: "" 
+  name: "seas-ibm-seas-serviceaccount" 
 
 # Configure resource requests and limits
 # ref: http://kubernetes.io/docs/user-guide/compute-resources/
