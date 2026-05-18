@@ -5,9 +5,11 @@ resources:
   - seas-pvc.yaml
   - seas-secret.yaml
 
+helmGlobals:
+  chartHome: .
+
 helmCharts:
   - name: ibm-seas
     releaseName: ibm-seas
     namespace: ibm-seas
-    path: ./ibm-seas
     valuesFile: ../values.yaml
