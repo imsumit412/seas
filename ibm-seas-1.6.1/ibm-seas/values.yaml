@@ -5,11 +5,11 @@
 
 # Change license to true to indicate that you have read and agree to license agreements
 # Refer: http://www-03.ibm.com/software/sla/sladb.nsf (L/N:  L-RTZS-YBMYST)
-license: false
+license: true
 
 # Specify the license edition as per license agreement. Valid value is prod or non-prod for Production and 
 # Non-production respectively. Remember that this parameter is crucial for IBM Licensing and Metering Service
-licenseType: prod
+licenseType: non-prod
 
 # Specify respective timezone
 timezone: "UTC"
@@ -56,7 +56,7 @@ storageSecurity:
   # rootSquashCheck flag has been created for the new deployment to indicate whether the user has reviewed the rootSquash requirements.
   # Set it to true - if the deployment user has read the rootSquash requirement.
   # Set it to false - if the deployment user has not read the rootSquash requirement. 
-  rootSquashCheck: false
+  rootSquashCheck: true
   # root squash setting 
   rootSquash:
     # set it to true - If root squash is enabled on the mounted PV server.
@@ -70,17 +70,17 @@ persistentVolume:
   # enabled is whether to use Persistent Volumes or not
   enabled: true
   # useDynamicProvisioning is whether or not to use Storage Classes to dynamically create Persistent Volumes 
-  useDynamicProvisioning: false
+  useDynamicProvisioning: true 
   # Specify the existing PV claim name to be used for deployment
-  existingClaimName: ""
+  existingClaimName: "ibm-seas-pvc"
   # Specify this to use selector label name for PV-PVC bind
-  labelName: "app.kubernetes.io/name"
+  # labelName: "app.kubernetes.io/name"
   # Specify this to use selector label value for PV-PVC bind
-  labelValue: "ibm-seas-pv"
+  # labelValue: "ibm-seas-pv"
   # Specify this to set storage class name
-  storageClassName: "manual"
+  storageClassName: "thin-csi"
   # Specify this to set PVC size
-  size: 2Gi
+  size: 300Mi
   # Specify this to set access mode
   accessMode: "ReadWriteOnce"
 
@@ -90,7 +90,7 @@ service:
   # Specify this to set service type.
   type: "LoadBalancer"
   # Specify this to set load balancer IP. It's added for cloud environment.
-  loadBalancerIP: "" 
+  loadBalancerIP: "10.120.133.241" 
   # Specify this to set external IP to access application outside the cluster.
   externalIP: ""
   # Specify this to set annotations 
@@ -117,10 +117,10 @@ service:
     containerPort: 61365
   secure:
     # Secure application is accessed by using below mentioned service port, so add port as per the requirement else it would be set 61366 as default port.
-    servicePort: 61366
+    servicePort: 63366
     # If traditional secure port is different from 61366 while migrating from traditional to container environment then in this case 
     # we need to change container port as traditional secure port value else It is not required to change the container port value.
-    containerPort: 61366
+    containerPort: 64366
   jetty:
     # Jetty(EA_GUI.jnlp) application is accessed by using below mentioned service port, so add port as per the requirement 
     # else it would be set 9080 as default port.
@@ -131,7 +131,7 @@ service:
 
 # Specify the Secret configuration for SEAS
 secret:
-  secretName: ""
+  secretName: "seas-secret"
 
 # Specify the service account details
 serviceAccount:
